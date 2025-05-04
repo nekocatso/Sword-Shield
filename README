@@ -38,16 +38,48 @@ pip install torch transformers sklearn beautifulsoup4 pyppeteer xlwt flask async
 
 ```
 Sword-Shield/
-├── Data/                  # 训练数据和关键字
-├── config/                # 配置设置
-├── shield/                # 基于 BERT 的网页分类
-├── spider/                # 用于获取页面的网络爬虫
-├── sword/                 # 关键字检测系统
-├── test_server/           # 包含示例页面的测试服务器
+├── .git/                  # Git 仓库元数据 (通常隐藏)
+├── .gitignore             # Git 忽略文件配置
+├── .venv/                 # Python 虚拟环境 (通常不提交)
+├── 1746346711.xls         # 示例输出文件
 ├── api.py                 # 使用 Sword-Shield 功能的 API
+├── best_bert_model.pth    # 训练好的 Shield 模型权重
 ├── commander.py           # 运行分析的命令行工具
+├── Dockerfile             # Docker 配置文件
+├── README                 # 本文档
+├── requirements.txt       # Python 依赖列表
 ├── toTable.py             # 将结果转换为 Excel 格式
-└── train.ipynb            # 用于训练 Shield 模型的 Notebook
+├── train.ipynb            # 用于训练 Shield 模型的 Jupyter Notebook
+├── url_list.txt           # 待分析的 URL 列表
+├── 输出记录               # (可能是输出目录)
+├── __pycache__/           # Python 编译缓存 (通常不提交)
+├── bert_model/            # 预训练 BERT 模型文件
+│   ├── config.json
+│   ├── pytorch_model.bin
+│   └── vocab.txt
+├── config/                # 配置设置
+│   ├── __init__.py
+│   ├── config.py
+│   └── __pycache__/
+├── Data/                  # 训练数据和关键字
+│   ├── keyword_tree.pickle # 序列化的关键字树
+│   ├── keyword.txt         # 原始关键字列表
+│   ├── tags_data.txt       # 标签数据 (可能用于训练)
+│   └── test_data.txt       # 测试/训练数据
+├── shield/                # 基于 BERT 的网页分类模块
+│   ├── shield.py
+│   └── __pycache__/
+├── spider/                # 用于获取页面的网络爬虫模块
+│   ├── spider.py
+│   └── __pycache__/
+├── sword/                 # 关键字检测系统模块
+│   ├── sword.py
+│   └── __pycache__/
+└── test_server/           # 包含示例页面的测试服务器
+    ├── web.py
+    └── templates/
+        ├── 0.html         # 示例恶意页面
+        └── 1.html         # 示例正常页面
 ```
 
 ## 使用方法
