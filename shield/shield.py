@@ -186,7 +186,10 @@ class Shield:
     def __init__(self) -> None:
         self.label_map = {0: "恶意网页", 1: "正常网页"}
         model = Bert_Model(BERT_PATH).to(DEVICE)
-        model.load_state_dict(torch.load("best_bert_model.pth"))
+        # Load state dict with strict=False to ignore unexpected keys
+        model.load_state_dict(
+            torch.load("best_bert_model.pth", map_location=DEVICE), strict=False
+        )
         model.eval()
         self.model = model
         self.tokenizer = BertTokenizer.from_pretrained(BERT_PATH)
