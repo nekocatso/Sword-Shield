@@ -38,9 +38,6 @@ pip install torch transformers sklearn beautifulsoup4 pyppeteer xlwt flask async
 
 ```
 Sword-Shield/
-├── .git/                  # Git 仓库元数据 (通常隐藏)
-├── .gitignore             # Git 忽略文件配置
-├── .venv/                 # Python 虚拟环境 (通常不提交)
 ├── 1746346711.xls         # 示例输出文件
 ├── api.py                 # 使用 Sword-Shield 功能的 API
 ├── best_bert_model.pth    # 训练好的 Shield 模型权重
@@ -51,8 +48,6 @@ Sword-Shield/
 ├── toTable.py             # 将结果转换为 Excel 格式
 ├── train.ipynb            # 用于训练 Shield 模型的 Jupyter Notebook
 ├── url_list.txt           # 待分析的 URL 列表
-├── 输出记录               # (可能是输出目录)
-├── __pycache__/           # Python 编译缓存 (通常不提交)
 ├── bert_model/            # 预训练 BERT 模型文件
 │   ├── config.json
 │   ├── pytorch_model.bin
@@ -60,11 +55,10 @@ Sword-Shield/
 ├── config/                # 配置设置
 │   ├── __init__.py
 │   ├── config.py
-│   └── __pycache__/
 ├── Data/                  # 训练数据和关键字
 │   ├── keyword_tree.pickle # 序列化的关键字树
 │   ├── keyword.txt         # 原始关键字列表
-│   ├── tags_data.txt       # 标签数据 (可能用于训练)
+│   ├── tags_data.txt       # 标签数据 (用于训练)
 │   └── test_data.txt       # 测试/训练数据
 ├── shield/                # 基于 BERT 的网页分类模块
 │   ├── shield.py
