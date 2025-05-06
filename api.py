@@ -4,6 +4,7 @@ from flask_cors import CORS
 from sword.sword import sword as _sword
 from bs4 import BeautifulSoup
 from shield.shield import Shield
+from spider.spider import spider  # Added import for spider
 
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -84,6 +85,66 @@ def handle_shield():
         return jsonify({"error": str(e)}), 500
 
 
+# New Endpoints for Gradio Frontend
+
+
+@app.route("/detect_html_content", methods=["POST"])
+def detect_html_content_route():
+    data = request.get_json()
+    html_content = data.get("html_content", "")
+    if not html_content:
+        return jsonify({"error": "没有提供HTML内容"}), 400
+    try:
+        result = {}
+        result["sword"] = _sword(html_content)  # 敏感词检测
+        result["shield"] = shield_model(html_content)  # 恶意网页检测
+        return jsonify(result)
+    except Exception as e:
+        logging.error(f"Error at /detect_html_content: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/detect_urls", methods=["POST"])
+def detect_urls_route():
+    data = request.get_json()
+    url_list = data.get("urls", [])
+    if not url_list:
+        return jsonify({"error": "没有提供URL列表"}), 400
+    try:
+        # Assuming spider returns a dict: {url: html_content_or_error_string}
+        # And that html_content_or_error_string is None or empty if fetching failed for a URL
+        crawled_responses = spider(url_list)
+        results = {}
+        for url, html_content in crawled_responses.items():
+            if html_content and isinstance(
+                html_content, str
+            ):  # Check if content was successfully fetched
+                results[url] = {
+                    "sword": _sword(html_content),
+                    "shield": shield_model(html_content),
+                }
+            else:
+                results[url] = {
+                    "sword": [],
+                    "shield": "Error: Failed to fetch or process content for this URL.",
+                    "details": html_content,  # Include error details from spider if any
+                }
+        return jsonify(results)
+    except Exception as e:
+        logging.error(f"Error at /detect_urls: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/model_status", methods=["GET"])
+def get_model_status_route():
+    try:
+        # Basic status, can be expanded later if models have load states
+        return jsonify({"sword_model": "加载完成", "shield_model": "加载完成"})
+    except Exception as e:
+        logging.error(f"Error at /model_status: {e}")
+        return jsonify({"error": str(e)}), 500
+
+
 # 运行Flask开发服务器
 if __name__ == "__main__":
-    app.run(host="192.168.0.1", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

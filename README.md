@@ -16,13 +16,6 @@ Sword-Shield 是一个全面的 Web 安全分析工具，通过两种互补的�
 - Python 3.13.2+
 - pip (Python 包管理器)
 
-### 依赖项
-
-```bash
-# 安装所需包
-pip install torch transformers sklearn beautifulsoup4 pyppeteer xlwt flask asyncio tqdm
-```
-
 ### 所需文件
 
 1.  下载预训练的 BERT 模型并将其放置在 `bert_model/` 目录中。该模型应包含三个文件：
