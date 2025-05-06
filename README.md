@@ -4,8 +4,8 @@
 
 Sword-Shield 是一个全面的 Web 安全分析工具，通过两种互补的检测方法帮助识别潜在的恶意网站：
 
-*   **Sword**：一个关键字检测系统，使用 trie 数据结构识别网页内容中潜在的敏感或恶意词语。 
-*   **Shield**：一个基于 BERT 的机器学习模型，根据网页的 HTML 标签结构将其分类为“恶意”或“正常”。
+- **Sword**：一个关键字检测系统，使用 trie 数据结构识别网页内容中潜在的敏感或恶意词语。
+- **Shield**：一个基于 BERT 的机器学习模型，根据网页的 HTML 标签结构将其分类为“恶意”或“正常”。
 
 该系统使用 **Spider** 组件爬取网页进行分析，并将结果输出为 Excel 格式。
 
@@ -13,8 +13,8 @@ Sword-Shield 是一个全面的 Web 安全分析工具，通过两种互补的�
 
 ### 先决条件
 
-*   Python 3.9+
-*   pip (Python 包管理器)
+- Python 3.9+
+- pip (Python 包管理器)
 
 ### 依赖项
 
@@ -26,19 +26,18 @@ pip install torch transformers sklearn beautifulsoup4 pyppeteer xlwt flask async
 ### 所需文件
 
 1.  下载预训练的 BERT 模型并将其放置在 `bert_model/` 目录中。该模型应包含三个文件：
-    *   `vocab.txt`
-    *   `pytorch_model.bin`
-    *   `config.json`
+    - `vocab.txt`
+    - `pytorch_model.bin`
+    - `config.json`
 2.  安装 Chrome 浏览器（Spider 组件需要）：
-    *   对于 Windows，将 Chrome 放置在 `./bin/chrome-win32/chrome.exe`
-    *   对于 Linux，请在 `spider/spider.py` 中调整路径以使用 `./bin/chrome-linux/chrome`
+    - 对于 Windows，将 Chrome 放置在 `./bin/chrome-win32/chrome.exe`
+    - 对于 Linux，请在 `spider/spider.py` 中调整路径以使用 `./bin/chrome-linux/chrome`
 3.  为 Sword 组件准备关键字列表，或使用 `data/` 目录中现有的关键字数据。
 
 ## 项目结构
 
 ```
 Sword-Shield/
-├── 1746346711.xls         # 示例输出文件
 ├── api.py                 # 使用 Sword-Shield 功能的 API
 ├── best_bert_model.pth    # 训练好的 Shield 模型权重
 ├── commander.py           # 运行分析的命令行工具
@@ -88,10 +87,11 @@ Sword-Shield/
     # 或者使用自定义 URL 列表：
     python commander.py path/to/your/url_list.txt
     ```
+
 3.  该脚本将：
-    *   爬取指定的网站 
-    *   使用 Sword 和 Shield 进行分析 
-    *   将结果保存到 Excel 文件 
+    - 爬取指定的网站
+    - 使用 Sword 和 Shield 进行分析
+    - 将结果保存到 Excel 文件
 
 ### 使用单个组件
 
@@ -177,21 +177,21 @@ responses = spider(urls)
     ```
 
 2.  服务器在以下地址提供测试页面：
-    *   `http://localhost:5000/0` (示例恶意页面)
-    *   `http://localhost:5000/1` (示例正常页面)
+    - `http://localhost:5000/0` (示例恶意页面)
+    - `http://localhost:5000/1` (示例正常页面)
 3.  通过将这些 URL 添加到您的 `url_list.txt` 并运行 commander 脚本来测试 Sword-Shield 系统。
 
 ## 输出格式
 
 结果以 Excel 格式保存，包含以下列：
 
-*   目标 URL
-*   是否包含恶意代码 (Shield 结果)
-*   敏感关键字检测结果 (Sword 结果)
+- 目标 URL
+- 是否包含恶意代码 (Shield 结果)
+- 敏感关键字检测结果 (Sword 结果)
 
 ## 注意事项
 
-*   Shield 组件使用 BERT 进行分类，这需要足够的计算资源。
-*   确保正确安装 Chrome 浏览器，以便 Spider 组件正常运行。
-*   关键字检测的性能取决于关键字列表的质量。
-*   默认模型将页面分为两类：恶意网页和正常网页。
+- Shield 组件使用 BERT 进行分类，这需要足够的计算资源。
+- 确保正确安装 Chrome 浏览器，以便 Spider 组件正常运行。
+- 关键字检测的性能取决于关键字列表的质量。
+- 默认模型将页面分为两类：恶意网页和正常网页。
