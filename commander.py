@@ -1,13 +1,11 @@
-# Import directly from the source modules
 from spider.spider import spider
 from sword.sword import sword
-from shield.shield import Shield  # Import the Shield class
+from shield.shield import Shield
 from toTable import write2table
 from time import time
 import sys
-import logging  # Import logging
+import logging
 
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
@@ -21,59 +19,50 @@ with open(FILE_PATH, encoding="utf-8") as f:
     url_list = [line.strip() for line in f]
 
 if __name__ == "__main__":
-    # Instantiate the Shield model
     shield_model = Shield()
 
     response = spider(url_list)
     result = {}
     t = time()
-    logging.info("Checking...")  # Use logging
+    logging.info("检查中...")
     if isinstance(response, dict):
         for url in response:
-            if isinstance(response[url], str) and response[url].startswith("ERROR:"):
+            if isinstance(response[url], str) and response[url].startswith(
+                "错误:"
+            ):  # Changed "ERROR:" to "错误:"
                 logging.warning(
-                    f"Skipping {url} due to spider error: {response[url]}"
-                )  # Use logging
-                result[url] = {"sword": "Spider Error", "shield": "Spider Error"}
+                    f"由于爬虫错误跳过 {url}: {response[url]}"
+                )  # 使用日志记录
+                result[url] = {"sword": "爬虫错误", "shield": "爬虫错误"}
                 continue
 
-            # Ensure response[url] is not None or empty before processing
             html_content = response.get(url)
             if not html_content:
-                logging.warning(
-                    f"Skipping {url} due to empty content from spider."
-                )  # Use logging
+                logging.warning(f"由于爬虫返回内容为空跳过 {url}。")  # 使用日志记录
                 result[url] = {
-                    "sword": "Spider Error - Empty Content",
-                    "shield": "Spider Error - Empty Content",
+                    "sword": "爬虫模块错误 - 内容为空",
+                    "shield": "爬虫模块错误 - 内容为空",
                 }
                 continue
 
             result[url] = {}
-            # Assuming sword function takes the HTML content directly
             result[url]["sword"] = sword(html_content)
-            # Call the __call__ method on the shield_model instance by calling the object directly
-            # Map result: 0 -> Malicious, 1 -> Normal
             shield_prediction_label = shield_model(
                 html_content
-            )  # Use __call__ instead of predict
-            result[url][
-                "shield"
-            ] = shield_prediction_label  # Assign the returned label directly
+            )  # 使用 __call__ 代替 predict
+            result[url]["shield"] = shield_prediction_label  # 直接分配返回的标签
 
     else:
-        logging.error(
-            "Error: Spider did not return the expected dictionary format."
-        )  # Use logging
-        result = {"error": "Spider failed"}
+        logging.error("错误：爬虫未返回预期的字典格式。")  # 使用日志记录
+        result = {"error": "爬虫失败"}
 
-    logging.info(f"Finish, Spend {time() - t}s")  # Use logging
-    logging.info("Write to EXCEL...")  # Use logging
+    logging.info(f"完成，耗时 {time() - t}秒")  # 使用日志记录
+    logging.info("写入EXCEL...")  # 使用日志记录
 
     if "error" not in result:
-        # Pass the processed result dictionary to write2table
+        # 将处理后的结果字典传递给 write2table
         write2table(result)
     else:
-        logging.error("Skipping writing to Excel due to spider error.")  # Use logging
+        logging.error("跳过Excel处理，爬虫模块错误。")  # 使用日志记录
 
-    logging.info("Finish")  # Use logging
+    logging.info("完成")  # 使用日志记录

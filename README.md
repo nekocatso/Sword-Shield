@@ -13,7 +13,7 @@ Sword-Shield 是一个全面的 Web 安全分析工具，通过两种互补的�
 
 ### 先决条件
 
-- Python 3.9+
+- Python 3.13.2+
 - pip (Python 包管理器)
 
 ### 依赖项

@@ -138,4 +138,11 @@ Thumbs.db
 best_bert_model.pth
 bert_model/
 Data/keyword_tree.pickle
+Data/keyword.txt
+Data/tags_data.txt
+Data/test_data.txt
 输出记录/
+bin/
+url_list.txt
+train.ipynb
+.bin/

@@ -14,7 +14,7 @@ import time
 from config.config import *
 from bs4 import BeautifulSoup
 
-# DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu") # 如果CUDA可用，则使用CUDA，否则使用CPU
 DEVICE = torch.device("cpu")
 
 
@@ -130,7 +130,7 @@ class Trainer:
                 )
                 label_pred.extend(result_pred)
                 label_true.extend(label.squeeze().cpu().numpy().tolist())
-        print("\n Test Accuracy = {} \n".format(accuracy_score(label_true, label_pred)))
+        print("\n 测试准确率 = {} \n".format(accuracy_score(label_true, label_pred)))
         print(classification_report(label_true, label_pred, digits=4))
 
     # 训练函数
@@ -144,7 +144,7 @@ class Trainer:
             """训练模型"""
             start = time.time()
             model.train()
-            print("***** Running training epoch {} *****".format(i + 1))
+            print("***** 正在运行训练周期 {} *****".format(i + 1))
             train_loss_sum = 0.0
             for idx, (ids, att, tpe, y) in enumerate(train_loader):
                 ids, att, tpe, y = (
@@ -163,7 +163,7 @@ class Trainer:
                 train_loss_sum += loss.item()
                 if (idx + 1) % (len(train_loader) // 5) == 0:  # 只打印五次结果
                     print(
-                        "Epoch {:04d} | Step {:04d}/{:04d} | Loss {:.4f} | Time {:.4f}".format(
+                        "周期 {:04d} | 步骤 {:04d}/{:04d} | 损失 {:.4f} | 时间 {:.4f}".format(
                             i + 1,
                             idx + 1,
                             len(train_loader),
@@ -178,15 +178,15 @@ class Trainer:
             if acc > best_acc:
                 best_acc = acc
                 torch.save(model.state_dict(), "best_bert_model.pth")
-            print("current acc is {:.4f}, best acc is {:.4f}".format(acc, best_acc))
-            print("time costed = {}s \n".format(round(time.time() - start, 5)))
+            print("当前准确率是 {:.4f}, 最高准确率是 {:.4f}".format(acc, best_acc))
+            print("耗时 = {}秒 \n".format(round(time.time() - start, 5)))
 
 
 class Shield:
     def __init__(self) -> None:
         self.label_map = {0: "恶意网页", 1: "正常网页"}
         model = Bert_Model(BERT_PATH).to(DEVICE)
-        # Load state dict with strict=False to ignore unexpected keys
+        # 加载状态字典，strict=False以忽略意外的键
         model.load_state_dict(
             torch.load("best_bert_model.pth", map_location=DEVICE), strict=False
         )
@@ -260,7 +260,7 @@ class Shield:
         return self.label_map[label]
 
 
-# a = Shield()
-# print(a("html head script script"))
+# a = Shield() # 实例化Shield类
+# print(a("html head script script")) # 打印调用结果
 
-# Trainer()._predict()
+# Trainer()._predict() # 调用Trainer类的_predict方法

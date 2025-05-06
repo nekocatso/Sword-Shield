@@ -3,104 +3,87 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from sword.sword import sword as _sword
 from bs4 import BeautifulSoup
-
-# from spider.spider import spider # Not used in API endpoints
 from shield.shield import Shield
 
-# from toTable import write2table # Not used in API endpoints
-
-# Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
 
-# Initialize Shield model
 shield_model = Shield()
 
-# Create Flask app
+# 创建Flask应用实例
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
+CORS(app)  # 为所有路由启用CORS
 
 
-# Define sword endpoint
+# 定义sword端点
 @app.route("/sword", methods=["POST"])
 def handle_sword():
     data = request.get_json()
     text = data.get("text", "")
     if not text:
-        return jsonify({"error": "No text provided"}), 400
+        return jsonify({"error": "没有提供文本"}), 400
     try:
-        # Extract text from body if HTML is provided
+        # 如果提供的是HTML，则从body中提取文本
         soup = BeautifulSoup(text, "html.parser")
         body = soup.find("body")
         if body:
             body_text = body.get_text()
         else:
-            # If no body tag, analyze the whole text
-            body_text = (
-                soup.get_text() if soup.get_text() else text
-            )  # Get text from soup or use original if soup is empty
+            body_text = soup.get_text() if soup.get_text() else text
 
         keywords = _sword(body_text)
         return jsonify({"keywords": keywords})
     except AttributeError as ae:
         logging.error(
-            f"Error extracting text from HTML in /sword: {ae}. Analyzing raw text as fallback."
+            f"在获取HTML页面时sword部件出错: {ae}. 请检查HTML内容是否有效或包含body标签。"
         )
-        # Fallback to analyzing the original text if specific parsing fails
+        # 如果特定的解析失败，则回退到分析原始文本
         try:
             keywords = _sword(text)
             return jsonify(
                 {
                     "keywords": keywords,
-                    "warning": "Could not parse HTML effectively, analyzed raw text.",
+                    "warning": "无法有效解析HTML，分析了原始文本。",
                 }
             )
         except Exception as e_fallback:
-            logging.error(f"Error in /sword fallback analysis: {e_fallback}")
-            return jsonify({"error": f"Failed to analyze text: {e_fallback}"}), 500
+            logging.error(f"在 /sword 回退分析中出错: {e_fallback}")
+            return jsonify({"error": f"分析文本失败: {e_fallback}"}), 500
     except Exception as e:
-        logging.error(f"Unexpected error in /sword: {e}")
-        # General fallback or specific error handling
+        logging.error(f"在 /sword 时发生意外错误: {e}")
+        # 通用回退或特定的错误处理
         try:
-            keywords = _sword(
-                text
-            )  # Try with original text if parsing fails unexpectedly
+            keywords = _sword(text)  # 如果解析意外失败，则尝试使用原始文本
             return jsonify(
                 {
                     "keywords": keywords,
-                    "warning": "An unexpected error occurred during HTML parsing, analyzed raw text.",
+                    "warning": "HTML解析过程中发生意外错误，已分析原始文本。",
                 }
             )
         except Exception as e_final_fallback:
-            logging.error(
-                f"Error in /sword final fallback analysis: {e_final_fallback}"
-            )
+            logging.error(f"在 /sword 最终回退分析中出错: {e_final_fallback}")
             return (
-                jsonify({"error": f"Failed to analyze text: {e_final_fallback}"}),
+                jsonify({"error": f"分析文本失败: {e_final_fallback}"}),
                 500,
             )
 
 
-# Define shield endpoint
+# 定义shield端点
 @app.route("/shield", methods=["POST"])
 def handle_shield():
     data = request.get_json()
     html_content = data.get("html", "")
     if not html_content:
-        return jsonify({"error": "No HTML content provided"}), 400
+        return jsonify({"error": "没有提供HTML内容"}), 400
     try:
-        # Shield expects HTML content
-        # Use the __call__ method directly as per commander.py usage
         result_label = shield_model(html_content)
         return jsonify({"result": result_label})
     except Exception as e:
-        logging.error(f"Error in /shield: {e}")  # Use logging
+        logging.error(f"在 /shield 时出错: {e}")  # 使用日志记录错误
         return jsonify({"error": str(e)}), 500
 
 
-# Run the Flask server
+# 运行Flask开发服务器
 if __name__ == "__main__":
-    # Make sure to run on 0.0.0.0 to be accessible from other containers/machines if needed
-    # Default Flask port is 5000, which matches the frontend config
-    app.run(host="0.0.0.0", port=5000, debug=True)  # Added debug=True for development
+    app.run(host="192.168.0.1", port=5000, debug=True)
