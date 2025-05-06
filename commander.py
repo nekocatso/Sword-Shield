@@ -5,6 +5,12 @@ from shield.shield import Shield  # Import the Shield class
 from toTable import write2table
 from time import time
 import sys
+import logging  # Import logging
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 FILE_PATH = "url_list.txt"
 
@@ -21,18 +27,22 @@ if __name__ == "__main__":
     response = spider(url_list)
     result = {}
     t = time()
-    print("Checking...")
+    logging.info("Checking...")  # Use logging
     if isinstance(response, dict):
         for url in response:
             if isinstance(response[url], str) and response[url].startswith("ERROR:"):
-                print(f"Skipping {url} due to spider error: {response[url]}")
+                logging.warning(
+                    f"Skipping {url} due to spider error: {response[url]}"
+                )  # Use logging
                 result[url] = {"sword": "Spider Error", "shield": "Spider Error"}
                 continue
 
             # Ensure response[url] is not None or empty before processing
             html_content = response.get(url)
             if not html_content:
-                print(f"Skipping {url} due to empty content from spider.")
+                logging.warning(
+                    f"Skipping {url} due to empty content from spider."
+                )  # Use logging
                 result[url] = {
                     "sword": "Spider Error - Empty Content",
                     "shield": "Spider Error - Empty Content",
@@ -52,16 +62,18 @@ if __name__ == "__main__":
             ] = shield_prediction_label  # Assign the returned label directly
 
     else:
-        print("Error: Spider did not return the expected dictionary format.")
+        logging.error(
+            "Error: Spider did not return the expected dictionary format."
+        )  # Use logging
         result = {"error": "Spider failed"}
 
-    print(f"Finish, Spend {time() - t}s")
-    print("Write to EXCEL...")
+    logging.info(f"Finish, Spend {time() - t}s")  # Use logging
+    logging.info("Write to EXCEL...")  # Use logging
 
     if "error" not in result:
         # Pass the processed result dictionary to write2table
         write2table(result)
     else:
-        print("Skipping writing to Excel due to spider error.")
+        logging.error("Skipping writing to Excel due to spider error.")  # Use logging
 
-    print("Finish")
+    logging.info("Finish")  # Use logging
