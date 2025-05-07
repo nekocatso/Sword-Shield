@@ -4,6 +4,8 @@
 
 Sword-Shield 是一个全面的 Web 安全分析工具，通过两种互补的检测方法帮助识别潜在的恶意网站：
 
+- **https://deepwiki.com/nekocatso/Sword-Shield**
+
 - **Sword**：一个关键字检测系统，使用 trie 数据结构识别网页内容中潜在的敏感或恶意词语。
 - **Shield**：一个基于 BERT 的机器学习模型，根据网页的 HTML 标签结构将其分类为“恶意”或“正常”。
 
