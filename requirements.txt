@@ -7,7 +7,7 @@ pyppeteer==2.0.0
 PyYAML==6.0.1
 regex==2023.12.25
 safetensors==0.4.3
-scikit-learn==1.4.2
+scikit-learn==1.5.2
 tokenizers==0.19.1
 torch==2.6.0
 tqdm==4.66.4
